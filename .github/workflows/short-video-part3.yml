@@ -1,0 +1,59 @@
+name: Generate SHORT Video (Days 21-31)
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 21-31. napján, napi 3x (13:40, 18:40, 23:40 UTC)
+    - cron: '40 13,18,23 21-31 * *'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4 
+      with:
+        fetch-depth: 0 
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: 'pip'
+
+    - name: Install System Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y imagemagick ffmpeg ghostscript wget
+        sudo sed -i 's/none/read,write/g' /etc/ImageMagick-6/policy.xml
+
+    - name: Install Python Libraries
+      run: |
+        pip install -r requirements.txt
+
+    - name: Decode Secrets to Files
+      run: |
+        echo "${{ secrets.GOOGLE_CLIENT_SECRETS_B64 }}" | base64 -d > client_secrets.json
+        echo "${{ secrets.GOOGLE_TOKEN_PICKLE_B64 }}" | base64 -d > token.pickle
+
+    - name: Prepare Folders and Fonts
+      run: |
+        mkdir -p FONT SCRIPTS GENERATED_CONTENT/TEXT GENERATED_CONTENT/TTS GENERATED_CONTENT/IMAGE GENERATED_CONTENT/VIDEO
+        wget -O FONT/BebasNeue-Regular.ttf https://github.com/google/fonts/raw/main/ofl/bebasneue/BebasNeue-Regular.ttf
+        [ -f SCRIPTS/used_titles.txt ] || touch SCRIPTS/used_titles.txt
+
+    - name: Run SHORT Video Generator & Uploader
+      env:
+        POLLINATIONS_API_KEYS: ${{ secrets.POLLINATIONS_API_KEYS }}
+      run: python short_video.py
+
+    - name: Upload Shorts Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: short-video-result
+        path: GENERATED_CONTENT/VIDEO/*.mp4

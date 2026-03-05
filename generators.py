@@ -8,65 +8,96 @@ keys_env = os.environ.get("POLLINATIONS_API_KEYS")
 API_KEYS = [k.strip() for k in keys_env.split(",")]
 
 
-
-
-def generate_text_def(prompt, file_name, temperature, system):
-    url = f"https://gen.pollinations.ai/text/{prompt}"
-    for key in API_KEYS:
-        r = requests.get(url, headers={"Authorization": f"Bearer {key}"}, params={"model": "openai", "temperature": temperature, "system": system})
-        if r.status_code == 200:
-            with open(file_name, "w", encoding="utf-8") as f: f.write(r.text)
-            return
-        elif r.status_code == 402: continue
-        else: break
-
-
-import urllib.parse
-import requests
-
 def generate_text(prompt, file_name, temperature, system):
-    # 1. LÉPÉS: Kódoljuk a promptot URL-barát formátumra
-    # A .strip() leszedi a felesleges szóközt/entert az elejéről/végéről
-    # A quote() átalakítja a speciális karaktereket (pl. szóköz -> %20)
-    encoded_prompt = urllib.parse.quote(prompt.strip())
-    
-    # 2. LÉPÉS: A kódolt szöveget illesztjük a URL-be
-    url = f"https://gen.pollinations.ai/text/{encoded_prompt}"
+    url = "https://gen.pollinations.ai/v1/chat/completions"
     
     for key in API_KEYS:
         try:
-            r = requests.get(
+            # Structure the payload in the standard OpenAI Chat Completions format
+            payload = {
+                "model": "openai",
+                "temperature": temperature,
+                "messages": [
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": prompt}
+                ]
+            }
+            
+            r = requests.post(
                 url,
-                headers={"Authorization": f"Bearer {key}"},
-                params={
-                    "model": "openai",
-                    "temperature": temperature,
-                    "system": system
-                }
+                headers={
+                    "Authorization": f"Bearer {key}",
+                    "Content-Type": "application/json"
+                },
+                json=payload
             )
 
             if r.status_code == 200:
+                # The response is a JSON object, so we extract just the text content
+                response_json = r.json()
+                generated_text = response_json["choices"][0]["message"]["content"]
+                
                 with open(file_name, "w", encoding="utf-8") as f:
-                    f.write(r.text)
+                    f.write(generated_text)
                 return
 
             elif r.status_code == 402:
                 continue
 
-            elif r.status_code == 404:
-                print("❌ 404 ERROR RECEIVED")
-                print("Status Code:", r.status_code)
-                print("URL (ellenőrizd, hogy nincs-e benne %0A az elején):", r.url)
-                print("Response Text:", r.text)
-                return
-
             else:
-                print(f"⚠️ Unexpected error: {r.status_code}")
+                print(f"❌ ERROR RECEIVED")
+                print(f"Status Code: {r.status_code}")
+                print(f"Response Text: {r.text}")
                 break
 
         except Exception as e:
             print("🚨 Request Exception:", str(e))
             break
+
+
+#def generate_text(prompt, file_name, temperature, system):
+    # 1. LÉPÉS: Kódoljuk a promptot URL-barát formátumra
+    # A .strip() leszedi a felesleges szóközt/entert az elejéről/végéről
+    # A quote() átalakítja a speciális karaktereket (pl. szóköz -> %20)
+#    encoded_prompt = urllib.parse.quote(prompt.strip())
+    
+    # 2. LÉPÉS: A kódolt szöveget illesztjük a URL-be
+#    url = f"https://gen.pollinations.ai/text/{encoded_prompt}"
+    
+#    for key in API_KEYS:
+#        try:
+#            r = requests.get(
+#                url,
+#                headers={"Authorization": f"Bearer {key}"},
+#                params={
+#                    "model": "openai",
+#                    "temperature": temperature,
+#                    "system": system
+#                }
+#            )
+
+#            if r.status_code == 200:
+#                with open(file_name, "w", encoding="utf-8") as f:
+#                    f.write(r.text)
+#                return
+
+#            elif r.status_code == 402:
+#                continue
+
+#            elif r.status_code == 404:
+#                print("❌ 404 ERROR RECEIVED")
+#                print("Status Code:", r.status_code)
+#                print("URL (ellenőrizd, hogy nincs-e benne %0A az elején):", r.url)
+#                print("Response Text:", r.text)
+#                return
+
+#            else:
+#                print(f"⚠️ Unexpected error: {r.status_code}")
+#                break
+
+#        except Exception as e:
+#            print("🚨 Request Exception:", str(e))
+#            break
 
 
 def generate_image_horizontal(prompt, file_name):
@@ -132,3 +163,4 @@ def generate_tts(full_text, file_name):
     return False
 
     
+

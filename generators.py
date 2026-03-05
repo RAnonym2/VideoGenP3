@@ -13,7 +13,7 @@ API_KEYS = [k.strip() for k in keys_env.split(",")]
 def generate_text_def(prompt, file_name, temperature, system):
     url = f"https://gen.pollinations.ai/text/{prompt}"
     for key in API_KEYS:
-        r = requests.get(url, headers={"Authorization": f"Bearer {key}"}, params={"model": "openai-large", "temperature": temperature, "system": system})
+        r = requests.get(url, headers={"Authorization": f"Bearer {key}"}, params={"model": "openai", "temperature": temperature, "system": system})
         if r.status_code == 200:
             with open(file_name, "w", encoding="utf-8") as f: f.write(r.text)
             return
@@ -39,7 +39,7 @@ def generate_text(prompt, file_name, temperature, system):
                 url,
                 headers={"Authorization": f"Bearer {key}"},
                 params={
-                    "model": "openai-large",
+                    "model": "openai",
                     "temperature": temperature,
                     "system": system
                 }
@@ -130,4 +130,5 @@ def generate_tts(full_text, file_name):
                 os.remove(f_name)
         return True
     return False
+
     

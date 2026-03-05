@@ -1,10 +1,10 @@
-name: Generate SHORT Video (Days 21-31)
+name: Generate SHORT Video (Daily)
 
 on:
   workflow_dispatch:
   schedule:
-    # 21-31. napján, napi 3x (13:40, 18:40, 23:40 UTC)
-    - cron: '40 13,18,23 21-31 * *'
+    # Minden nap, napi 3x (13:40, 18:40, 23:40 UTC)
+    - cron: '40 13,18,23 * * *'
 
 permissions:
   contents: write

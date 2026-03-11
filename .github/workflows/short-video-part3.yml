@@ -3,8 +3,8 @@ name: Generate SHORT Video (Daily)
 on:
   workflow_dispatch:
   schedule:
-    # Minden nap, napi 3x (13:40, 18:40, 23:40 UTC)
-    - cron: '40 13,18,23 * * *'
+    # Minden nap, napi 3x (12:40, 17:40, 22:40 UTC)
+    - cron: '40 12,17,22 * * *'
 
 permissions:
   contents: write

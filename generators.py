@@ -102,8 +102,8 @@ def generate_text(prompt, file_name, temperature, system):
 
 def generate_image_horizontal(prompt, file_name):
     url = f"https://gen.pollinations.ai/image/{prompt}"
-    for key in API_KEYS: # klein-large # gptimage
-        r = requests.get(url, headers={"Authorization": f"Bearer {key}"}, params={"model": "gptimage", "width": 1920, "height": 1080, "safe": True})
+    for key in API_KEYS: # klein-large # gptimage #grok-imagine
+        r = requests.get(url, headers={"Authorization": f"Bearer {key}"}, params={"model": "grok-imagine", "width": 1920, "height": 1080, "safe": True})
         if r.status_code == 200:
             with open(file_name, "wb") as f: f.write(r.content)
             return
@@ -112,8 +112,8 @@ def generate_image_horizontal(prompt, file_name):
 
 def generate_image_vertical(prompt, file_name):
     url = f"https://gen.pollinations.ai/image/{prompt}"
-    for key in API_KEYS: # klein-large # gptimage
-        r = requests.get(url, headers={"Authorization": f"Bearer {key}"}, params={"model": "gptimage", "width": 1080, "height": 1920, "safe": True})
+    for key in API_KEYS: # klein-large # gptimage #grok-imagine
+        r = requests.get(url, headers={"Authorization": f"Bearer {key}"}, params={"model": "grok-imagine", "width": 1080, "height": 1920, "safe": True})
         if r.status_code == 200:
             with open(file_name, "wb") as f: f.write(r.content)
             return

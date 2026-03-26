@@ -14,8 +14,8 @@ def generate_text(prompt, file_name, temperature, system):
     for key in API_KEYS:
         try:
             # Structure the payload in the standard OpenAI Chat Completions format
-            payload = {
-                "model": "openai",
+            payload = { #openai
+                "model": "gemini-fast",
                 "temperature": temperature,
                 "messages": [
                     {"role": "system", "content": system},
@@ -103,7 +103,7 @@ def generate_text(prompt, file_name, temperature, system):
 def generate_image_horizontal(prompt, file_name):
     url = f"https://gen.pollinations.ai/image/{prompt}"
     for key in API_KEYS: # klein-large # gptimage #grok-imagine
-        r = requests.get(url, headers={"Authorization": f"Bearer {key}"}, params={"model": "grok-imagine", "width": 1920, "height": 1080, "safe": True})
+        r = requests.get(url, headers={"Authorization": f"Bearer {key}"}, params={"model": "zimage", "width": 1920, "height": 1080, "safe": True})
         if r.status_code == 200:
             with open(file_name, "wb") as f: f.write(r.content)
             return
@@ -113,7 +113,7 @@ def generate_image_horizontal(prompt, file_name):
 def generate_image_vertical(prompt, file_name):
     url = f"https://gen.pollinations.ai/image/{prompt}"
     for key in API_KEYS: # klein-large # gptimage #grok-imagine
-        r = requests.get(url, headers={"Authorization": f"Bearer {key}"}, params={"model": "grok-imagine", "width": 1080, "height": 1920, "safe": True})
+        r = requests.get(url, headers={"Authorization": f"Bearer {key}"}, params={"model": "zimage", "width": 1080, "height": 1920, "safe": True})
         if r.status_code == 200:
             with open(file_name, "wb") as f: f.write(r.content)
             return
@@ -133,25 +133,35 @@ def smart_split_text(text, max_chars=700):
         else: current_chunk += " " + sentence
     if current_chunk: chunks.append(current_chunk.strip())
     return chunks
+
 def generate_tts(full_text, file_name):
     chunks = smart_split_text(full_text)
     temp_files = []
 
     for i, chunk in enumerate(chunks):
         encoded_prompt = urllib.parse.quote(chunk)
-        url = f"https://gen.pollinations.ai/audio/{encoded_prompt}"
         temp_file = f"temp_tts_{i}.mp3"
         chunk_success = False
-    
+
         for key in API_KEYS:
-            r = requests.get(url, headers={"Authorization": f"Bearer {key}"}, params={"voice": "echo"})
+            url = f"https://gen.pollinations.ai/audio/{encoded_prompt}?model=whisper&voice=echo&key={key}"
+            
+            r = requests.get(url)
+            
             if r.status_code == 200:
-                with open(temp_file, "wb") as f: f.write(r.content)
+                with open(temp_file, "wb") as f:
+                    f.write(r.content)
                 temp_files.append(temp_file)
                 chunk_success = True
-                break 
-            elif r.status_code == 402: continue
-            else: continue
+                break
+            elif r.status_code == 402:
+                continue
+            else:
+                continue
+
+        # opcionális: ha egy chunk nem sikerül
+        if not chunk_success:
+            print(f"Chunk {i} failed")
 
     if temp_files:
         with open(file_name, "wb") as outfile:
@@ -160,7 +170,5 @@ def generate_tts(full_text, file_name):
                     outfile.write(infile.read())
                 os.remove(f_name)
         return True
+
     return False
-
-    
-

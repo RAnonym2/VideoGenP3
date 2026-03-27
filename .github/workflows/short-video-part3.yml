@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   schedule:
     # Minden nap, napi 3x (12:40, 17:40, 22:40 UTC)
-    - cron: '40 12,17,22 * * *'
-
+    #- cron: '40 12,17,22 * * *'
+    - cron: '0 */2 * * *'
 permissions:
   contents: write
 

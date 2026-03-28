@@ -15,7 +15,7 @@ def generate_text(prompt, file_name, temperature, system):
         try:
             # Structure the payload in the standard OpenAI Chat Completions format
             payload = { #openai
-                "model": "gemini-fast",
+                "model": "openai",
                 "temperature": temperature,
                 "messages": [
                     {"role": "system", "content": system},

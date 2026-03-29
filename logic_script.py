@@ -144,7 +144,7 @@ CRITICAL RULES:
 """
 
     prompt = f"""
-Write a high-energy script strictly between 130-150 words based on this title: "{title_content}"
+Write a high-energy script strictly between 80-110 words based on this title: "{title_content}"
 
 STRUCTURE:
 1. THE HOOK (First 5s): Start instantly with a shocking statement or question to grab attention.

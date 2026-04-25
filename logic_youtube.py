@@ -95,6 +95,9 @@ def generate_metadata(title, script_content):
     """
     print("--- 🚀 YouTube Metadata Generálás (Anti-AI Stealth Mode) ---")
     
+    # Ensure directory exists
+    os.makedirs("GENERATED_CONTENT/TEXT", exist_ok=True)
+    
     # ---------------------------------------------------------
     # 1. DESCRIPTION (SEO & Story, NO AI, NO Lists)
     # ---------------------------------------------------------
@@ -123,7 +126,11 @@ CRITICAL RULES:
     generate_text(desc_prompt, "GENERATED_CONTENT/TEXT/description.txt", 0.7, desc_system)
     
     # Beolvasás és extra tisztítás Pythonnal
-    desc_raw = open("GENERATED_CONTENT/TEXT/description.txt", "r", encoding="utf-8").read()
+    if os.path.exists("GENERATED_CONTENT/TEXT/description.txt"):
+        desc_raw = open("GENERATED_CONTENT/TEXT/description.txt", "r", encoding="utf-8").read()
+    else:
+        print("⚠️ Description generation failed, using fallback")
+        desc_raw = f"Watch {title} for fascinating insights. Subscribe for more."
     description = clean_text_formatting(desc_raw)
 
     # ---------------------------------------------------------
@@ -139,7 +146,13 @@ CRITICAL RULES:
     - Focus on the TOPIC (e.g., Space, History, Mystery).
     """
     generate_text(tags_prompt, "GENERATED_CONTENT/TEXT/tags.txt", 0.5, tags_system)
-    tags_raw = open("GENERATED_CONTENT/TEXT/tags.txt", "r", encoding="utf-8").read()
+    
+    # Check if tags file exists, otherwise use fallback
+    if os.path.exists("GENERATED_CONTENT/TEXT/tags.txt"):
+        tags_raw = open("GENERATED_CONTENT/TEXT/tags.txt", "r", encoding="utf-8").read()
+    else:
+        print("⚠️ Tags generation failed, using fallback")
+        tags_raw = "documentary, mystery, fascinating, discovery, science, nature, history, knowledge, viral, trending"
     
     # Tisztítás és extra védelem a YouTube limitek miatt
     # 1. Kicseréljük az új sorokat vesszőkre, és eltüntetjük a felesleges idézőjeleket
@@ -180,7 +193,12 @@ CRITICAL RULES:
     - Output ONLY the text.
     """
     generate_text(thumb_text_prompt, "GENERATED_CONTENT/TEXT/thumb_text.txt", 0.85, thumb_text_system)
-    thumb_text = open("GENERATED_CONTENT/TEXT/thumb_text.txt", "r", encoding="utf-8").read().strip().replace('"', '')
+    
+    if os.path.exists("GENERATED_CONTENT/TEXT/thumb_text.txt"):
+        thumb_text = open("GENERATED_CONTENT/TEXT/thumb_text.txt", "r", encoding="utf-8").read().strip().replace('"', '')
+    else:
+        print("⚠️ Thumbnail text generation failed, using fallback")
+        thumb_text = "MUST WATCH"
 
     # ---------------------------------------------------------
     # 4. THUMBNAIL VISUAL PROMPT
@@ -194,7 +212,12 @@ CRITICAL RULES:
     Output: A single descriptive sentence.
     """
     generate_text(visual_prompt, "GENERATED_CONTENT/TEXT/thumb_visual.txt", 0.8, visual_system)
-    thumb_visual_prompt = open("GENERATED_CONTENT/TEXT/thumb_visual.txt", "r", encoding="utf-8").read().strip()
+    
+    if os.path.exists("GENERATED_CONTENT/TEXT/thumb_visual.txt"):
+        thumb_visual_prompt = open("GENERATED_CONTENT/TEXT/thumb_visual.txt", "r", encoding="utf-8").read().strip()
+    else:
+        print("⚠️ Thumbnail visual generation failed, using fallback")
+        thumb_visual_prompt = f"Cinematic professional image related to {title}, 8k, dramatic lighting"
 
     return description, tags, thumb_text, thumb_visual_prompt
 

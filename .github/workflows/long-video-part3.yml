@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     # Minden hónap 21-31. napján, 18:00 UTC-kor
-    - cron: '0 18 21-31 * *'
+    - cron: '0 18 1-31 * *'
 
 permissions:
   contents: write

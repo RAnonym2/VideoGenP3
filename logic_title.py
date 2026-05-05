@@ -105,14 +105,14 @@ def generate_title():
         used_titles_content = ""
 
     # --- SYSTEM PROMPT ---
-    system_prompt = """You are a Science Editor for a channel focused on Astrophysics and Cosmology. Your goal is to write titles that appeal to intellectual curiosity about physics and reality.
+    system_prompt = """You are a Science Editor for a channel focused on Astrophysics and Cosmology. Your goal is to write titles that appeal to intellectual curiosity about the Universe.
 
     SYSTEM INTEGRITY PROTOCOLS:
     1. NO Markdown formatting.
     2. NO quotation marks, emojis, or special symbols.
     3. NO conversational filler.
     4. Output MUST be a single line of text only.
-    5. Prioritize "The Mystery" or "The Impossible" aspects of physics.
+    5. Prioritize interesting things about the Universe.
     6. MAXIMUM LENGTH: 75 characters. Keep it short and punchy.
     """
 
@@ -133,7 +133,7 @@ def generate_title():
     NEGATIVE CONSTRAINTS:
     - Do not use questions about "Meaning of Life" or "Consciousness".
     - Do not be poetic. Be dramatic but factual.
-    - Ensure the title is completely different from these previously used titles:
+    - DO NOT USE THE TITLES THAT ARE LISTED BELOW:
     ---
     {used_titles_content}
     ---
@@ -144,7 +144,7 @@ def generate_title():
     output_file = "GENERATED_CONTENT/TEXT/title.txt"
     max_retries = 10
     attempt = 0
-    base_temp = 0.85
+    base_temp = 1
     last_char_count = 0
     current_title = ""
 

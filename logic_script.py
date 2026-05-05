@@ -28,8 +28,8 @@ def generate_long_script():
     Write a deep, engaging, and structured script based on the provided title.
     
     LENGTH CONSTRAINT (CRITICAL):
-    - Target Word Count: ~1100 words. 
-    - ABSOLUTE LIMIT: Do NOT exceed 1300 words. It is better to be concise and dense than long and repetitive.
+    - Target Word Count: 950 words. 
+    - ABSOLUTE LIMIT: Do NOT exceed 1000 words. It is better to be concise and dense than long and repetitive.
     - If you find yourself repeating ideas just to fill space: STOP.
     
     STYLE GUIDELINES:
@@ -42,14 +42,14 @@ def generate_long_script():
     base_prompt = f"""
     Write a complete spoken narrative script for the video title: "{title_content}"
 
-    STRICT LENGTH CONTROL: Aim for exactly 1100 words. Do not go over 1300.
+    STRICT LENGTH CONTROL: Aim for exactly 1000 words. Do not go over 1300.
 
     USE THIS FLEXIBLE NARRATIVE ARC (Do not label the sections, just follow the flow):
 
     1. THE HOOK (approx 150 words): 
         Start with the most interesting fact, a misconception, or a direct question that creates an "Open Loop" in the viewer's mind. Why should they care about this *right now*?
 
-    2. THE CONTEXT, THE BACKGROUND (approx 250 words): 
+    2. THE CONTEXT, THE BACKGROUND (approx 150 words): 
         Set the stage. If it's history, what led to this event? If it's science, what was the prevailing theory before? If it's a phenomenon, where do we see it? 
         (Focus on the "Before" state).
 
@@ -72,10 +72,10 @@ def generate_long_script():
     """
     
     output_file = "GENERATED_CONTENT/TEXT/script.txt"
-    base_max_words = 1400
-    max_retries = 8  # Biztonsági okokból maximum 5-ször próbálja újra
+    base_max_words = 1150
+    max_retries = 12 # Biztonsági okokból maximum 5-ször próbálja újra
     attempt = 0
-    base_temp = 0.7
+    base_temp = 0.9
     last_word_count = 0
     
     print(f"--- Generating Script for: {title_content} ---")
